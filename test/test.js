@@ -1,0 +1,332 @@
+var expect = require('chai').expect;
+var Emitter = require('../build');
+
+describe('on', function() {
+  it('should add single event', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo', function(val) {
+      foo = val;
+    });
+
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+
+    emitter.emit('foo', 1);
+    expect(foo).to.equal(2);
+  });
+
+  it('should add multiple events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo bar', function(val, bar) {
+      foo += val;
+      if (bar) {
+        foo += bar;
+      }
+    });
+
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1, 2);
+    expect(foo).to.equal(4);
+  });
+});
+
+describe('once', function() {
+  it('should add events that will be fired once', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.once('foo', function(val) {
+      foo += val;
+    });
+
+    emitter.emit('foo', 1);
+    emitter.emit('foo', 2);
+    emitter.emit('foo', 3);
+    expect(foo).to.equal(1);
+  });
+});
+
+describe('only', function() {
+  it('should add only one listener for each event', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    // Only this should be fired
+    emitter.only('foo', function(val) {
+      foo += val;
+    });
+
+    // Not fired
+    emitter.on('foo', function() {
+      foo = 1;
+    });
+
+    // Not fired
+    emitter.only('foo', function() {
+      foo = 2;
+    });
+
+    emitter.emit('foo', 1);
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(3);
+  });
+});
+
+describe('off', function() {
+  it('should remove all events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo bar', function(val) {
+      foo += val;
+    });
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1);
+    emitter.off();
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1);
+    expect(foo).to.equal(2);
+  });
+
+  it('should remove single event', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+    emitter.off('foo');
+    emitter.emit('foo', 1);
+    expect(foo).to.equal(0);
+  });
+
+  it('should remove multiple events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo bar', function(val) {
+      foo += val;
+    });
+    emitter.off('foo bar');
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1);
+    expect(foo).to.equal(0);
+  });
+
+  it('should remove specific listener', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    function add(val) {
+      foo += val;
+    }
+
+    function subtract(val) {
+      foo -= val;
+    }
+
+    emitter.on('foo', add);
+    emitter.on('foo', subtract);
+    emitter.off('foo', subtract);
+    emitter.emit('foo', 1);
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(3);
+  });
+
+  it('should work for once method', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    function add(val) {
+      foo += val;
+    }
+
+    function subtract(val) {
+      foo -= val;
+    }
+
+    emitter.on('foo', add);
+    emitter.once('foo', subtract);
+    emitter.off('foo', subtract);
+    emitter.emit('foo', 1);
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(3);
+  });
+
+  it('should work for only method', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.only('foo', function(val) {
+      foo += val;
+    });
+    emitter.off('foo');
+    emitter.emit('foo', 1);
+    expect(foo).to.equal(0);
+  });
+});
+
+describe('offence', function() {
+  it('should silence all events for once', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo bar', function(val) {
+      foo += val;
+    });
+    emitter.offence();
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1);
+
+    // Second calls should be fired
+    emitter.emit('foo', 3);
+    emitter.emit('bar', 4);
+    expect(foo).to.equal(7);
+  });
+
+  it('should silence single event for once', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+    emitter.offence('foo');
+    emitter.emit('foo', 1);
+
+    // Second call should be fired
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(2);
+  });
+
+  it('should silence multiple events for once', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on('foo bar', function(val) {
+      foo += val;
+    });
+    emitter.offence('foo bar');
+    emitter.emit('foo', 1);
+    emitter.emit('bar', 1);
+
+    // Second calls should be fired
+    emitter.emit('foo', 3);
+    emitter.emit('bar', 4);
+    expect(foo).to.equal(7);
+  });
+
+  it('should silence specific listener for once', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    function add(val) {
+      foo += val;
+    }
+    function subtract(val) {
+      foo -= val;
+    }
+    emitter.on('foo', add);
+    emitter.on('foo', subtract);
+    emitter.offence('foo', subtract);
+
+    // Only add should be fired
+    emitter.emit('foo', 1);
+
+    // Both methods should be fired now
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(1);
+  });
+
+  it('should work for once method', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    function add(val) {
+      foo += val;
+    }
+    function subtract(val) {
+      foo -= val;
+    }
+    emitter.on('foo', add);
+    emitter.once('foo', subtract);
+    emitter.offence('foo', subtract);
+
+    // Only add should be fired
+    emitter.emit('foo', 1);
+
+    // Both methods should be fired now
+    emitter.emit('foo', 2);
+
+    // Again only add should be fired
+    emitter.emit('foo', 3);
+    expect(foo).to.equal(4);
+  });
+
+  it('should work for only method', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.only('foo', function(val) {
+      foo += val;
+    });
+    emitter.offence('foo');
+    emitter.emit('foo', 1);
+
+    // Second call should be fired
+    emitter.emit('foo', 2);
+    expect(foo).to.equal(2);
+  });
+});
+
+describe('getListeners', function() {
+  it('should return array of listeners', function() {
+    var emitter = new Emitter();
+
+    function foo() {
+      return 0;
+    }
+    emitter.on('foo', foo);
+    expect(emitter.getListeners('foo')).to.deep.equal([foo]);
+  });
+
+  it('should return empty array', function() {
+    expect(new Emitter().getListeners('foo')).to.deep.equal([]);
+  });
+});
+
+describe('hasListeners', function() {
+  it('should return true', function() {
+    var emitter = new Emitter();
+
+    function foo() {
+      return 0;
+    }
+    emitter.on('foo', foo);
+    expect(emitter.hasListeners('foo')).is.true;
+  });
+
+  it('should return false', function() {
+    expect((new Emitter()).hasListeners('foo')).is.false;
+  });
+});
+
+describe('mixin', function() {
+  it('should work', function() {
+    var emitter = {};
+    var foo = 0;
+
+    Emitter(emitter);
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+    emitter.emit('foo', 1);
+
+    expect(foo).to.equal(1);
+  });
+});
