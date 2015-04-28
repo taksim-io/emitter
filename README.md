@@ -1,4 +1,4 @@
-# Emitter
+# Event Emitter
 
 Event emitter for node and browser without any dependency.
 
