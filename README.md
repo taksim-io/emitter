@@ -6,7 +6,7 @@ Event emitter for node and browser without any dependency.
 
 ### Server
 
-Install it as a [node](http://nodejs.org/) module via [npm](https://www.npmjs.com/).
+Install as a [node](http://nodejs.org/) module via [npm](https://www.npmjs.com/).
 
     npm install taksim-emitter
 
@@ -18,7 +18,7 @@ var Emitter = require('taksim-emitter');
 
 ### Client
 
-You can pull down it using [Bower](http://bower.io/)
+You can pull down by using [Bower](http://bower.io/)
 
     bower install taksim-emitter
 
