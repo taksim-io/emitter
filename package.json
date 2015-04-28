@@ -1,6 +1,6 @@
 {
   "name": "taksim-emitter",
-  "description": "A fast and lightweight javascript color conversion library for client and server.",
+  "description": "Event emitter for node and browser without any dependency.",
   "version": "0.1.0",
   "main": "dist/taksim-emitter.js",
   "homepage": "https://github.com/taksim-io/emitter",
