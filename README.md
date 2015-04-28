@@ -57,7 +57,7 @@ emitter.emit('foo', arg1, arg2/*...args*/);
 Pass an object to register multiple `event`s at a time.
 
 ```js
-var emitter = Emitter({});
+var emitter = new Emitter();
 emitter.on({
   foo: function(args) {
     // Do something
@@ -75,7 +75,7 @@ emitter.emit('bar');
 Fires the callback once and unregisters it after the first `emit` call.
 
 ```js
-var emitter = Emitter({});
+var emitter = new Emitter();
 var foo = 0;
 
 emitter.once('foo', function(val) {
