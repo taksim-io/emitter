@@ -1,6 +1,6 @@
 /**
  * @license MIT
- * taksim.io/emitter v0.1.0
+ * taksim.io/emitter v0.1.1
  * https://github.com/taksim-io/emitter
  * Copyright (c) 2015 taksim.io
 */
