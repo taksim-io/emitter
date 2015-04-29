@@ -1,7 +1,7 @@
 {
   "name": "taksim-emitter",
   "description": "Event emitter for node and browser without any dependency.",
-  "version": "0.1.2",
+  "version": "0.1.1",
   "main": "dist/taksim-emitter.js",
   "homepage": "https://github.com/taksim-io/emitter",
   "keywords": [
