@@ -8,7 +8,7 @@ Event emitter for node and browser without any dependency.
 
 Install as a [node](http://nodejs.org/) module via [npm](https://www.npmjs.com/).
 
-    npm install taksim-emitter
+    npm install taksim-emitter --save
 
 and include in a file;
 
@@ -20,7 +20,7 @@ var Emitter = require('taksim-emitter');
 
 You can pull down by using [Bower](http://bower.io/)
 
-    bower install taksim-emitter
+    bower install taksim-emitter --save
 
 or just [download](https://raw.githubusercontent.com/taksim-io/emitter/master/dist/taksim-emitter.min.js) the latest minified version and include in your document.
 
