@@ -2,7 +2,7 @@ var expect = require('chai').expect;
 var Emitter = require('../build');
 
 describe('on', function() {
-  it('should add single event', function() {
+  it('should add a callback on an event', function() {
     var emitter = new Emitter();
     var foo = 0;
 
@@ -18,7 +18,7 @@ describe('on', function() {
     expect(foo).to.equal(2);
   });
 
-  it('should add multiple events', function() {
+  it('should add same callback on multiple events ', function() {
     var emitter = new Emitter();
     var foo = 0;
 
@@ -32,6 +32,24 @@ describe('on', function() {
     emitter.emit('foo', 1);
     emitter.emit('bar', 1, 2);
     expect(foo).to.equal(4);
+  });
+
+  it('should add multiple events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.on({
+      foo: function(val) {
+        foo += val;
+      },
+      bar: function(val) {
+        foo -= val;
+      }
+    });
+
+    emitter.emit('foo', 2);
+    emitter.emit('bar', 1);
+    expect(foo).to.equal(1);
   });
 });
 
