@@ -40,6 +40,7 @@
       }
       else {
         var len = callbacks.length;
+        callbacks = callbacks.slice();
         for (var i = 0; i < len; i++) {
           result = callbacks[i].apply(this, args);
           if (result === false) {
