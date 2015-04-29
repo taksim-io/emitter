@@ -1,6 +1,6 @@
 /**
  * @license MIT
- * taksim.io/emitter v0.1.1
+ * taksim.io/emitter v0.1.2
  * https://github.com/taksim-io/emitter
  * Copyright (c) 2015 taksim.io
 */
@@ -40,6 +40,7 @@
       }
       else {
         var len = callbacks.length;
+        callbacks = callbacks.slice();
         for (var i = 0; i < len; i++) {
           result = callbacks[i].apply(this, args);
           if (result === false) {
