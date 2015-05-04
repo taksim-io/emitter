@@ -24,12 +24,14 @@
 
   function TaksimEmitter(obj) {
     if (obj) {
+      predefine(obj);
       return mixin(obj);
     }
+    predefine(this);
   }
 
   proto.emit = function() {
-    var on = get(this, 'listeners');
+    var on = this._t.emitter.listeners;
     var args = Array.prototype.slice.call(arguments);
     var event = args.shift();
     var result;
@@ -59,8 +61,8 @@
     else if (typeof callback === 'function') {
       var events = event.split(' ');
       var i = events.length;
-      var on = get(this, 'listeners');
-      on || (on = set(this, 'listeners', {}));
+      var on = this._t.emitter.listeners;
+      on || (on = this._t.emitter.listeners = {});
       while (i--) {
         event = events[i];
         if (typeof on[event] !== 'function') {
@@ -100,8 +102,8 @@
     else if (typeof callback === 'function') {
       var events = event.split(' ');
       var i = events.length;
-      var on = get(this, 'listeners');
-      on || (on = set(this, 'listeners', {}));
+      var on = this._t.emitter.listeners;
+      on || (on = this._t.emitter.listeners = {});
       while (i--) {
         var e = events[i];
         if (typeof on[e] !== 'function') {
@@ -114,12 +116,12 @@
 
   proto.off = function(event, callback) {
     var argsLen = arguments.length;
-    var on = get(this, 'listeners');
+    var on = this._t.emitter.listeners;
     if (!on) {
       return this;
     }
     if (argsLen === 0) {
-      set(this, 'listeners', null);
+      this._t.emitter.listeners = null;
     }
     else if (!on[event]) {
       var events = event.split(' ');
@@ -148,7 +150,7 @@
 
   proto.offence = function(event, callback) {
     var argsLen = arguments.length;
-    var on = get(this, 'listeners');
+    var on = this._t.emitter.listeners;
     var callbacks = on[event];
     if (!on) {
       return this;
@@ -193,32 +195,25 @@
   }
 
   proto.getListeners = function(event) {
-    return (get(this, 'listeners') || {})[event] || [];
+    return (this._t.emitter.listeners || {})[event] || [];
   };
 
   proto.hasListeners = function(event) {
     return !!this.getListeners(event).length;
   };
 
-  function set(ctx, key, value) {
-    ctx._t || (ctx._t = {
-      emitter: {}
-    });
-    ctx._t.emitter[key] = value;
-    return value;
+  function predefine(ctx) {
+    ctx._t || (ctx._t = {});
+    ctx._t.emitter = {};
   }
 
-  function get(ctx, key) {
-    return ctx._t && ctx._t.emitter && ctx._t.emitter[key];
-  }
-
-  function mixin(obj) {
+  function mixin(ctx) {
     for (var key in proto) {
       if (proto.hasOwnProperty(key)) {
-        obj[key] = proto[key];
+        ctx[key] = proto[key];
       }
     }
-    return obj;
+    return ctx;
   }
 
   function eachEvent(ctx, method, obj) {
