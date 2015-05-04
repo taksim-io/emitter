@@ -6,12 +6,12 @@
 */
 
 ;(function(root, factory) {
-  var Emitter = factory(root);
   if (typeof define === 'function' && define.amd) {
-    define(Emitter);
+    define(factory);
   } else if (typeof exports === 'object') {
-    module.exports = Emitter;
+    module.exports = factory(root);
   } else {
+    var Emitter = factory(root);
     root.Emitter || (root.Emitter = Emitter);
     root.taksim || (root.taksim = {});
     root.taksim.Emitter = Emitter;
@@ -20,13 +20,13 @@
 
   'use strict';
 
+  var proto = TaksimEmitter.prototype;
+
   function TaksimEmitter(obj) {
     if (obj) {
       return mixin(obj);
     }
   }
-
-  var proto = TaksimEmitter.prototype;
 
   proto.emit = function() {
     var on = get(this, 'listeners');
