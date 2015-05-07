@@ -1,6 +1,6 @@
 /**
  * @license MIT
- * taksim.io/emitter v0.1.4
+ * taksim.io/emitter v0.1.5
  * https://github.com/taksim-io/emitter
  * Copyright (c) 2015 taksim.io
 */
@@ -125,8 +125,10 @@
     else if (!on[event]) {
       var events = event.split(' ');
       var j = events.length;
-      while (--j >= 0) {
-        this.off(events[j], callback);
+      if (j > 1) {
+        while (j--) {
+          this.off(events[j], callback);
+        }
       }
     }
     else if (argsLen === 1 || !callback || typeof on[event] === 'function') {
@@ -150,7 +152,7 @@
   proto.offence = function(event, callback) {
     var argsLen = arguments.length;
     var on = getListeners(this);
-    var callbacks = on[event];
+    var callbacks;
     if (!on) {
       return this;
     }
@@ -164,16 +166,20 @@
     else if (!on[event]) {
       var events = event.split(' ');
       var j = events.length;
-      while (--j >= 0) {
-        this.offence(events[j], callback);
+      if (j > 1) {
+        while (j--) {
+          this.offence(events[j], callback);
+        }
       }
     }
     else if (argsLen === 1 || !callback || typeof callbacks === 'function') {
+      callbacks = on[event];
       if (String(callbacks) !== 'function() {on[event] = callbacks;}') {
         on[event] = function() {on[event] = callbacks;};
       }
     }
     else if (callback) {
+      callbacks = on[event];
       var len = callbacks.length;
       for (var i = 0; i < len; i++) {
         var strCallback = String(callbacks[i]);
