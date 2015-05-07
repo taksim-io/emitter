@@ -187,6 +187,18 @@ describe('off', function() {
     emitter.emit('foo', 1);
     expect(foo).to.equal(0);
   });
+
+  it('should do nothing for unregistered events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.only('foo', function(val) {
+      foo += val;
+    });
+    emitter.off('bar');
+    emitter.emit('bar', 1);
+    expect(foo).to.equal(0);
+  });
 });
 
 describe('offence', function() {
@@ -299,6 +311,19 @@ describe('offence', function() {
     // Second call should be fired
     emitter.emit('foo', 2);
     expect(foo).to.equal(2);
+  });
+
+  it('should do nothing for unregistered events', function() {
+    var emitter = new Emitter();
+    var foo = 0;
+
+    emitter.only('foo', function(val) {
+      foo += val;
+    });
+    emitter.offence('bar');
+    emitter.emit('bar', 1);
+    emitter.emit('bar', 2);
+    expect(foo).to.equal(0);
   });
 });
 
