@@ -221,16 +221,16 @@
     }
   }
 
-  function _t(ctx) {
-    return ctx._t[namespace];
-  }
-
   function init(ctx) {
     ctx._t || (ctx._t = {});
     ctx._t[namespace] = {
       listeners: null
     };
     return ctx;
+  }
+
+  function _t(ctx) {
+    return ctx._t[namespace];
   }
 
   function mixin() {
@@ -251,7 +251,36 @@
     return base;
   }
 
-  TaksimEmitter.init = init;
   TaksimEmitter.mixin = mixin;
+  TaksimEmitter.extend = function(constructor, extender) {
+    if (typeof constructor !== 'function') {
+      extender = constructor;
+      constructor = null;
+    }
+    var sup = this;
+    var sub;
+
+    if (constructor) {
+      sub = constructor;
+    }
+    else {
+      sub = function() {
+        return sup.apply(this, arguments);
+      };
+    }
+
+    var Mirror = function() {
+      this.constructor = sub;
+    };
+    Mirror.prototype = sup.prototype;
+    sub.prototype = new Mirror();
+
+    mixin(sub, sup);
+    mixin(sub.prototype, extender);
+
+    sub.__super__ = sup.prototype;
+    return sub;
+  };
+
   return TaksimEmitter;
 });
