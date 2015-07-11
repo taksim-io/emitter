@@ -15,7 +15,8 @@ gulp.task('validate', function() {
   ])
   .pipe(jscs({
     preset: 'airbnb',
-    requirePaddingNewLinesAfterBlocks: null
+    requirePaddingNewLinesAfterBlocks: null,
+    safeContextKeyword: null
   }))
   .pipe(jshint({
     lookup: false,
