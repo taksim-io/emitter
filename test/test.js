@@ -360,7 +360,7 @@ describe('hasListeners', function() {
 });
 
 describe('mixin', function() {
-  it('should work', function() {
+  it('should add emitter methods to any object', function() {
     var emitter = {};
     var foo = 0;
 
@@ -369,6 +369,82 @@ describe('mixin', function() {
       foo += val;
     });
     emitter.emit('foo', 1);
+
+    expect(foo).to.equal(1);
+  });
+
+  it('should work with multiple objects', function() {
+    var base = {};
+    var source1 = {
+      foo: 1
+    };
+    var source2 = {
+      bar: 2
+    };
+
+    Emitter.mixin(base, source1, source2);
+
+    expect(base.foo + base.bar).to.equal(3);
+  });
+});
+
+describe('extend', function() {
+  it('should create a new constructor method based on Emitter', function() {
+    var ExtendEmitter = Emitter.extend();
+    var emitter = new ExtendEmitter();
+    var foo = 0;
+
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+    emitter.emit('foo', 1);
+
+    expect(emitter).to.be.an.instanceof(Emitter);
+    expect(emitter).to.be.an.instanceof(ExtendEmitter);
+    expect(ExtendEmitter.extend).to.be.a.function;
+    expect(ExtendEmitter.mixin).to.be.a.function;
+    expect(ExtendEmitter.init).to.be.a.function;
+    expect(foo).to.equal(1);
+  });
+
+  it('should create a new constructor method based on Emitter and supplied constructor', function() {
+    var ExtendEmitter = Emitter.extend(ExtendEmitter_);
+    var emitter = new ExtendEmitter();
+    var foo = 0;
+
+    function ExtendEmitter_() {
+      Emitter.call(this);
+      this.on('foo', function() {
+        foo += 1;
+      });
+    }
+
+    emitter.on('foo', function(val) {
+      foo += val;
+    });
+    emitter.emit('foo', 1);
+
+    expect(emitter).to.be.an.instanceof(Emitter);
+    expect(emitter).to.be.an.instanceof(ExtendEmitter);
+    expect(emitter).to.be.an.instanceof(ExtendEmitter_);
+    expect(foo).to.equal(2);
+  });
+
+  it('should create a new constructor with supplied extend methods', function() {
+    var ExtendEmitter = Emitter.extend({
+      foo: attachFooListener
+    });
+    var emitter = new ExtendEmitter();
+    var foo = 0;
+
+    function attachFooListener() {
+      this.on('foo', function() {
+        foo += 1;
+      });
+      return this;
+    }
+
+    emitter.foo().emit('foo', 1);
 
     expect(foo).to.equal(1);
   });
