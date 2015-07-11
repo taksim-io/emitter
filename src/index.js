@@ -25,12 +25,14 @@
 
   function TaksimEmitter(obj) {
     if (obj) {
-      return mixin(obj);
+      init(mixin(obj, proto));
+      return obj;
     }
+    init(this);
   }
 
   proto.emit = function() {
-    var on = getListeners(this);
+    var on = _t(this).listeners;
     var args = Array.prototype.slice.call(arguments);
     var event = args.shift();
     var result;
@@ -60,8 +62,9 @@
     else if (typeof callback === 'function') {
       var events = event.split(' ');
       var i = events.length;
-      var on = getListeners(this);
-      on || (on = setListeners(this, {}));
+      var t = _t(this);
+      var on = t.listeners;
+      on || (on = t.listeners = {});
       while (i--) {
         event = events[i];
         if (typeof on[event] !== 'function') {
@@ -101,8 +104,9 @@
     else if (typeof callback === 'function') {
       var events = event.split(' ');
       var i = events.length;
-      var on = getListeners(this);
-      on || (on = setListeners(this, {}));
+      var t = _t(this);
+      var on = t.listeners;
+      on || (on = t.listeners = {});
       while (i--) {
         var e = events[i];
         if (typeof on[e] !== 'function') {
@@ -115,12 +119,13 @@
 
   proto.off = function(event, callback) {
     var argsLen = arguments.length;
-    var on = getListeners(this);
+    var t = _t(this);
+    var on = t.listeners;
     if (!on) {
       return this;
     }
     if (argsLen === 0) {
-      setListeners(this, null);
+      t.listeners = null;
     }
     else if (!on[event]) {
       var events = event.split(' ');
@@ -151,7 +156,8 @@
 
   proto.offence = function(event, callback) {
     var argsLen = arguments.length;
-    var on = getListeners(this);
+    var t = _t(this);
+    var on = t.listeners;
     var callbacks;
     if (!on) {
       return this;
@@ -193,46 +199,18 @@
     return this;
   };
 
-  function offence(callbacks, i, callback) {
-    callbacks[i] = function() {
-      callbacks[i] = callback;
-    };
-  }
-
   proto.getListeners = function(event) {
-    return (getListeners(this) || {})[event] || [];
+    return (_t(this).listeners || {})[event] || [];
   };
 
   proto.hasListeners = function(event) {
     return !!this.getListeners(event).length;
   };
 
-  function get(ctx, key) {
-    return ctx._t && ctx._t[namespace] && ctx._t[namespace][key];
-  }
-
-  function getListeners(ctx) {
-    return get(ctx, 'listeners');
-  }
-
-  function set(ctx, key, val) {
-    ctx._t || (ctx._t = {});
-    ctx._t[namespace] = {};
-    ctx._t[namespace][key] = val;
-    return val;
-  }
-
-  function setListeners(ctx, val) {
-    return set(ctx, 'listeners', val);
-  }
-
-  function mixin(ctx) {
-    for (var key in proto) {
-      if (proto.hasOwnProperty(key)) {
-        ctx[key] = proto[key];
-      }
-    }
-    return ctx;
+  function offence(callbacks, i, callback) {
+    callbacks[i] = function() {
+      callbacks[i] = callback;
+    };
   }
 
   function eachEvent(ctx, method, obj) {
@@ -243,5 +221,37 @@
     }
   }
 
+  function _t(ctx) {
+    return ctx._t[namespace];
+  }
+
+  function init(ctx) {
+    ctx._t || (ctx._t = {});
+    ctx._t[namespace] = {
+      listeners: null
+    };
+    return ctx;
+  }
+
+  function mixin() {
+    var args = Array.prototype.slice.call(arguments);
+    var base = args.shift();
+    var len = args.length;
+    base || (base = {});
+    for (var i = 0; i < len; i++) {
+      var source = args[i];
+      if (source) {
+        for (var prop in source) {
+          if (source.hasOwnProperty(prop)) {
+            base[prop] = source[prop];
+          }
+        }
+      }
+    }
+    return base;
+  }
+
+  TaksimEmitter.init = init;
+  TaksimEmitter.mixin = mixin;
   return TaksimEmitter;
 });
