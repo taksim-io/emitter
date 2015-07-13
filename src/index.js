@@ -20,6 +20,7 @@
 
   'use strict';
 
+  var uniqueId = 1;
   var namespace = 'emitter';
   var proto = TaksimEmitter.prototype;
 
@@ -226,6 +227,7 @@
     ctx._t[namespace] = {
       listeners: null
     };
+    ctx._t.id = uniqueId++;
     return ctx;
   }
 
