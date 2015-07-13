@@ -251,35 +251,39 @@
     return base;
   }
 
+  function inherits(child, parent) {
+    var Mirror = function() {
+      this.constructor = child;
+    };
+    Mirror.prototype = parent.prototype;
+    child.prototype = new Mirror();
+    child.__super__ = parent.prototype;
+  }
+
   TaksimEmitter.mixin = mixin;
+  TaksimEmitter.inherits = inherits;
   TaksimEmitter.extend = function(ctor, extender) {
     if (typeof ctor !== 'function') {
       extender = ctor;
       ctor = null;
     }
-    var sup = this;
-    var sub;
+    var parent = this;
+    var child;
 
     if (ctor) {
-      sub = ctor;
+      child = ctor;
     }
     else {
-      sub = function() {
-        return sup.apply(this, arguments);
+      child = function() {
+        return parent.apply(this, arguments);
       };
     }
 
-    var Mirror = function() {
-      this.constructor = sub;
-    };
-    Mirror.prototype = sup.prototype;
-    sub.prototype = new Mirror();
+    inherits(child, parent);
+    mixin(child, parent);
+    mixin(parent.prototype, extender);
 
-    mixin(sub, sup);
-    mixin(sub.prototype, extender);
-
-    sub.__super__ = sup.prototype;
-    return sub;
+    return child;
   };
 
   return TaksimEmitter;
