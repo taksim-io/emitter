@@ -152,7 +152,7 @@ Checks if the emitter has a registered callback.
 
 ## Helper methods
 
-### Emitter.mixin(base:object, source1:object, source2: object/\*, ... \*/)
+### Emitter.mixin(base:object, source:object/\*, ... \*/)
 
 A helper function which copies source objects' properties to the base object. You can pass any number of source objects to this function. Base and source objects can be regular objects, prototypes or functions.
 
