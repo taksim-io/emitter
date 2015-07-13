@@ -252,16 +252,16 @@
   }
 
   TaksimEmitter.mixin = mixin;
-  TaksimEmitter.extend = function(constructor, extender) {
-    if (typeof constructor !== 'function') {
-      extender = constructor;
-      constructor = null;
+  TaksimEmitter.extend = function(ctor, extender) {
+    if (typeof ctor !== 'function') {
+      extender = ctor;
+      ctor = null;
     }
     var sup = this;
     var sub;
 
-    if (constructor) {
-      sub = constructor;
+    if (ctor) {
+      sub = ctor;
     }
     else {
       sub = function() {
