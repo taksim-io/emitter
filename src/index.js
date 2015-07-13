@@ -252,12 +252,14 @@
   }
 
   function inherits(child, parent) {
+    var childProto = child.prototype;
     var Mirror = function() {
       this.constructor = child;
     };
     Mirror.prototype = parent.prototype;
     child.prototype = new Mirror();
     child.__super__ = parent.prototype;
+    mixin(child.prototype, childProto);
   }
 
   TaksimEmitter.mixin = mixin;
@@ -280,7 +282,7 @@
 
     inherits(child, parent);
     mixin(child, parent);
-    mixin(parent.prototype, extender);
+    mixin(child.prototype, extender);
 
     return child;
   };
