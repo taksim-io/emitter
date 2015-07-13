@@ -449,4 +449,54 @@ describe('extend', function() {
 
     expect(foo).to.equal(1);
   });
+
+  it('should work with the documentation example', function() {
+    var foo = 0;
+    var area = 0;
+
+    Emitter.extend(Rectangle, {
+      area: function() {
+        var area = this.height * this.width;
+        this.emit('area', area);
+        return area;
+      }
+    });
+
+    function Rectangle(width, height) {
+      Emitter.call(this);
+      this.width = width;
+      this.height = height;
+      this.on('area',  function(a) {
+        area = a;
+        foo++;
+      });
+    }
+
+    function Square_(sideLength) {
+      Rectangle.call(this, sideLength, sideLength);
+    }
+
+    Square_.prototype.update = function(sideLength) {
+      this.height = this.width = sideLength;
+      this.area();
+      return this;
+    };
+
+    var Square = Rectangle.extend(Square_);
+    var square = new Square(5);
+
+    square
+      .on('area', function(a) {
+        area = a;
+        foo++;
+      })
+      .update(4);
+
+    expect(square).to.be.an.instanceof(Square_);
+    expect(square).to.be.an.instanceof(Square);
+    expect(square).to.be.an.instanceof(Rectangle);
+    expect(square).to.be.an.instanceof(Emitter);
+    expect(area).to.equal(16);
+    expect(foo).to.equal(2);
+  });
 });
