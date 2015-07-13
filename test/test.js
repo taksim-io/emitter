@@ -373,6 +373,28 @@ describe('mixin', function() {
     expect(foo).to.equal(1);
   });
 
+  it('should work with prototype objects', function() {
+    function TestCtor() {}
+    Emitter(TestCtor.prototype);
+    var emitter1 = new TestCtor();
+    var emitter2 = new TestCtor();
+    var foo = 0;
+    var bar = 0;
+
+    emitter1.on('foo', function(val) {
+      foo += val;
+    });
+    emitter1.emit('foo', 1);
+
+    emitter2.on('foo', function(val) {
+      bar += val;
+    });
+    emitter2.emit('foo', 1);
+
+    expect(foo).to.equal(1);
+    expect(bar).to.equal(1);
+  });
+
   it('should work with multiple objects', function() {
     var base = {};
     var source1 = {
