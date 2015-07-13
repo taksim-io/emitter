@@ -261,7 +261,6 @@
   }
 
   TaksimEmitter.mixin = mixin;
-  TaksimEmitter.inherits = inherits;
   TaksimEmitter.extend = function(ctor, extender) {
     if (typeof ctor !== 'function') {
       extender = ctor;
