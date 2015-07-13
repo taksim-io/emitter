@@ -173,7 +173,7 @@ console.log(base.bar); // 2
 
 ### Emitter.extend(constructor:function, extender:object)
 
-Creates new constructor function which is a subclass of Emitter. You can override Emitter's constructor function by passing first parameter as your custom constructor. If the second parameter is supplied, all of its properties are attached to the newly created subclass's prototype by mixin function. All properties on Emitter function are also attached to the subclass, which means that you can use mixin and extend on subclass (see the snippet below).
+Creates new constructor function which is a subclass of `Emitter`. You can override Emitter's constructor function by passing first parameter as your custom constructor. If the second parameter is supplied, all of its properties are attached to the newly created subclass's prototype by mixin function. All properties on Emitter function are also attached to the subclass, which means that you can use `Subclass.mixin` and `Subclass.extend` too (see the snippet below).
 
 ```js
 // Here we override Emitter's own constructor with Rectangle
