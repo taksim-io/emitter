@@ -235,13 +235,11 @@
     return ctx._t[namespace];
   }
 
-  function mixin() {
-    var args = Array.prototype.slice.call(arguments);
-    var base = args.shift();
-    var len = args.length;
+  function mixin(base) {
+    var len = arguments.length;
     base || (base = {});
-    for (var i = 0; i < len; i++) {
-      var source = args[i];
+    for (var i = 1; i < len; i++) {
+      var source = arguments[i];
       if (source) {
         for (var prop in source) {
           if (source.hasOwnProperty(prop)) {
