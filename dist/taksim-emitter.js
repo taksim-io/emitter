@@ -1,6 +1,6 @@
 /**
  * @license MIT
- * taksim.io/emitter v0.2.0
+ * taksim.io/emitter v0.2.1
  * https://github.com/taksim-io/emitter
  * Copyright (c) 2015 taksim.io
 */
@@ -26,10 +26,8 @@
 
   function TaksimEmitter(obj) {
     if (obj) {
-      init(mixin(obj, proto));
-      return obj;
+      return mixin(obj, proto);
     }
-    init(this);
   }
 
   proto.emit = function() {
@@ -222,17 +220,10 @@
     }
   }
 
-  function init(ctx) {
-    ctx._t || (ctx._t = {});
-    ctx._t[namespace] = {
-      listeners: null
-    };
-    ctx._t.id = uniqueId++;
-    return ctx;
-  }
-
   function _t(ctx) {
-    return ctx._t[namespace];
+    ctx._t || (ctx._t = {});
+    ctx._t.id || (ctx._t.id = uniqueId++);
+    return ctx._t[namespace] || (ctx._t[namespace] = {});
   }
 
   function mixin(base) {
