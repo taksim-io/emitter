@@ -376,7 +376,8 @@ describe('mixin', function() {
   it('should work with multiple objects', function() {
     var base = {};
     var source1 = {
-      foo: 1
+      foo: 1,
+      bar: 1
     };
     var source2 = {
       bar: 2
