@@ -485,7 +485,6 @@ describe('extend', function() {
     });
 
     function Rectangle(width, height) {
-      Emitter.call(this);
       this.width = width;
       this.height = height;
       this.on('area',  function(a) {
