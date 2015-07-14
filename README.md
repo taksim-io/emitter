@@ -190,12 +190,6 @@ Emitter.extend(Rectangle, {
 });
 
 function Rectangle(width, height) {
-  // Because we override the Emitter's constructor,
-  // we should call "Emitter()" with Rectangle's context here
-  // to attach necessary variables that Emitter may use
-  // on new Rectangle instances.
-  Emitter.call(this);
-
   this.width = width;
   this.height = height;
 
@@ -207,6 +201,10 @@ function Rectangle(width, height) {
 
 function Square(sideLength) {
   // A call to the parent constructor is necessary again.
+  // Because we override the Rectangle's constructor,
+  // we should call "Rectangle()" with Square's context here
+  // to attach necessary variables (width and height) that
+  // Rectangle may use on new Square instances.
   Rectangle.call(this, sideLength, sideLength);
 }
 
