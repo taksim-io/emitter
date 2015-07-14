@@ -206,6 +206,12 @@
     return !!this.getListeners(event).length;
   };
 
+  proto._tid = function() {
+    var ctx = this;
+    ctx._t || (ctx._t = {});
+    return ctx._t.tid || (ctx._t.tid = uniqueId++);
+  };
+
   function offence(callbacks, i, callback) {
     callbacks[i] = function() {
       callbacks[i] = callback;
@@ -222,7 +228,6 @@
 
   function _t(ctx) {
     ctx._t || (ctx._t = {});
-    ctx._t.id || (ctx._t.id = uniqueId++);
     return ctx._t[namespace] || (ctx._t[namespace] = {});
   }
 
